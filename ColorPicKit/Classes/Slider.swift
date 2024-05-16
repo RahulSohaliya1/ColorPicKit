@@ -75,6 +75,16 @@ import UIKit
         }
     }
     
+    private var _showKnowPreviewView = false
+    @IBInspectable public var showKnowPreviewView: Bool {
+        get {
+            return _showKnowPreviewView
+        }
+        set {
+            _showKnowPreviewView = newValue
+        }
+    }
+    
     
     
     private var _barHeight: CGFloat = 10
@@ -203,6 +213,8 @@ import UIKit
 
     fileprivate var hexPopupView: HexPopupView? = nil
     
+    fileprivate var colorKnowPreviewView: CircleView? = nil
+    
     @objc private func panGestureHappened(sender: UIPanGestureRecognizer) {
         // Position
         if sender.state == .began {
@@ -220,15 +232,32 @@ import UIKit
             touchesHappened(point)
             touchDown()
             setHexPopupViewFrame(point: point)
+            setKnobPreviewViewFrame(point: point)
         } else if sender.state == .changed {
             touchesHappened(point)
             setHexPopupViewFrame(point: point)
+            setKnobPreviewViewFrame(point: point)
         } else if sender.state == .ended {
             touchesHappened(point)
             touchUpInside()
             removeHexPopupView()
+            removeKnowPreviewView()
         }
         
+    }
+    
+    fileprivate func removeKnowPreviewView() {
+        if _showKnowPreviewView {
+            if let knowPreviewView = colorKnowPreviewView {
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    knowPreviewView.alpha = 0
+                }, completion: { (animated) in
+                    knowPreviewView.removeFromSuperview()
+                    self.colorKnowPreviewView = nil
+                })
+            }
+        }
     }
     
     fileprivate func removeHexPopupView() {
@@ -266,6 +295,30 @@ import UIKit
             }
         }
     }
+    
+    fileprivate func setKnobPreviewViewFrame(point: CGPoint) {
+        if showKnowPreviewView {
+            let height: CGFloat = 70
+            let width: CGFloat = 100
+            let halfWidth = width / 2.0
+            let frame = CGRect(x: point.x - halfWidth, y: point.y - (height + knobSize.height / 2.0 + 8), width: width, height: height)
+            
+            if let knowPreviewView = self.colorKnowPreviewView {
+                knowPreviewView.frame = frame
+                return
+            } else {
+                colorKnowPreviewView = CircleView(frame: frame)
+                colorKnowPreviewView?.alpha = 0
+                addSubview(colorKnowPreviewView!)
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.colorKnowPreviewView?.alpha = 1.0
+                })
+                
+            }
+        }
+    }
+    
+    
     
     @objc private func longPressGestureHappened(sender: UILongPressGestureRecognizer) {
         
@@ -362,6 +415,7 @@ import UIKit
     func updateKnobColor() {
         if colorKnob {
             knobView.color = color
+            colorKnowPreviewView?.color = color
         } else {
             knobView.color = .white
         }
