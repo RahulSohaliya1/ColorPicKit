@@ -330,14 +330,17 @@ import UIKit
         if sender.state == .began {
             touchesHappened(point)
             touchDown()
+            setKnobPreviewViewFrame(point: point)
 //            let generator = UIImpactFeedbackGenerator(style: .light)
 //            generator.impactOccurred()
 
         } else if sender.state == .changed {
             touchesHappened(point)
+            setKnobPreviewViewFrame(point: point)
         } else if sender.state == .ended {
             touchesHappened(point)
             touchUpInside()
+            removeKnowPreviewView()
         }
 
     }
