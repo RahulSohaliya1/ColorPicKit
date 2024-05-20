@@ -87,13 +87,13 @@ class CircleView: UIView {
         context.fillPath()
 
         // Optionally, draw an outline around the circle
-        context.setStrokeColor(UIColor.systemPink.cgColor)
+        context.setStrokeColor(UIColor.white.cgColor)
         context.setLineWidth(3.8)
         context.addArc(center: center, radius: radius, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
         context.strokePath()
 
         // Draw the pin tail
-        context.setFillColor(UIColor.systemPink.cgColor)
+        context.setFillColor(UIColor.white.cgColor)
         let tailPath = UIBezierPath()
         tailPath.move(to: CGPoint(x: rect.midX - 8, y: center.y + radius))
         tailPath.addLine(to: CGPoint(x: rect.midX + 8, y: center.y + radius))
